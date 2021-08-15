@@ -23,8 +23,8 @@ impl Color {
             Color::Green => 5,
         }
     }
-    pub fn from(u: usize) -> Color {
-        match u {
+    pub fn from_value (value: usize) -> Color {
+        match value {
             0 => Color::Black,
             1 => Color::White,
             2 => Color::Yellow,
@@ -91,10 +91,10 @@ impl Game {
         Game {
             state: State::Playable(Playable { tries: Vec::new() }),
             secret_code: Code([
-                Color::from(rand::random::<usize>() % COLORS_NBR),
-                Color::from(rand::random::<usize>() % COLORS_NBR),
-                Color::from(rand::random::<usize>() % COLORS_NBR),
-                Color::from(rand::random::<usize>() % COLORS_NBR),
+                Color::from_value(rand::random::<usize>() % COLORS_NBR),
+                Color::from_value(rand::random::<usize>() % COLORS_NBR),
+                Color::from_value(rand::random::<usize>() % COLORS_NBR),
+                Color::from_value(rand::random::<usize>() % COLORS_NBR),
             ]),
         }
     }
@@ -145,10 +145,10 @@ mod tests_play {
     #[test]
     fn win() {
         let code = Code([
-            Color::from(rand::random::<usize>() % COLORS_NBR),
-            Color::from(rand::random::<usize>() % COLORS_NBR),
-            Color::from(rand::random::<usize>() % COLORS_NBR),
-            Color::from(rand::random::<usize>() % COLORS_NBR),
+            Color::from_value(rand::random::<usize>() % COLORS_NBR),
+            Color::from_value(rand::random::<usize>() % COLORS_NBR),
+            Color::from_value(rand::random::<usize>() % COLORS_NBR),
+            Color::from_value(rand::random::<usize>() % COLORS_NBR),
         ]);
 
         let mut game = Game::new_with_secret_code(code);

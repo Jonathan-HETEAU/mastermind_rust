@@ -2,6 +2,7 @@
 name = "mastermind"
 version = "0.1.0"
 edition = "2018"
+authors = ["Heteau Jonathan <jonathan.heteau@gmail.com>"]
 
 [dependencies]
 rand = "0.8.0"
