@@ -62,7 +62,11 @@ pub fn evaluate(source: &Code, code: &Code) -> (u8, u8) {
 }
 
 #[derive(Clone, Copy)]
-pub struct Try(Code, (u8, u8));
+pub struct Try {
+    pub code: Code,
+    pub good: u8,
+    pub bad: u8,
+}
 
 pub struct Playable {
     pub tries: Vec<Try>,
@@ -111,7 +115,11 @@ impl Game {
         match &mut self.state {
             State::Playable(playable) => {
                 let result = evaluate(&self.secret_code, &code);
-                playable.tries.push(Try(code, result));
+                playable.tries.push(Try {
+                    code: code,
+                    good: result.0,
+                    bad: result.1,
+                });
                 match (result, playable.tries.len()) {
                     ((CODE_SIZE, _), _) => {
                         self.state = State::Finish(Finish(
@@ -161,7 +169,10 @@ mod tests_play {
             Game::new_with_secret_code([Color::White, Color::White, Color::White, Color::White]);
         let state = game.play([Color::Black, Color::Black, Color::Black, Color::Black]);
         match state {
-            State::Playable(playable) => assert_eq!(playable.tries[0].1, (0, 0)),
+            State::Playable(playable) => {
+                assert_eq!(playable.tries[0].good, 0);
+                assert_eq!(playable.tries[0].bad, 0);
+            }
             _ => panic!(),
         }
     }
@@ -172,7 +183,10 @@ mod tests_play {
             Game::new_with_secret_code([Color::White, Color::Blue, Color::Green, Color::Black]);
         let state = game.play([Color::Black, Color::White, Color::Blue, Color::Green]);
         match state {
-            State::Playable(playable) => assert_eq!(playable.tries[0].1, (0, 4)),
+            State::Playable(playable) => {
+                assert_eq!(playable.tries[0].good, 0);
+                assert_eq!(playable.tries[0].bad, 4);
+            }
             _ => panic!(),
         }
     }
