@@ -71,11 +71,16 @@ pub struct Try {
 pub struct Playable {
     pub tries: Vec<Try>,
 }
-enum Result {
+#[derive(Debug, PartialEq, PartialOrd)]
+pub enum Result {
     Win,
     Loose,
 }
-pub struct Finish(Code, Result, Vec<Try>);
+pub struct Finish {
+    pub code: Code,
+    pub result: Result,
+    pub tries: Vec<Try>,
+}
 
 pub enum State {
     Playable(Playable),
@@ -122,18 +127,18 @@ impl Game {
                 });
                 match (result, playable.tries.len()) {
                     ((CODE_SIZE, _), _) => {
-                        self.state = State::Finish(Finish(
-                            self.secret_code,
-                            Result::Win,
-                            playable.tries.clone(),
-                        ))
+                        self.state = State::Finish(Finish {
+                            code: self.secret_code,
+                            result: Result::Win,
+                            tries: playable.tries.clone(),
+                        })
                     }
                     ((_, _), GAME_TRY) => {
-                        self.state = State::Finish(Finish(
-                            self.secret_code,
-                            Result::Loose,
-                            playable.tries.clone(),
-                        ))
+                        self.state = State::Finish(Finish {
+                            code: self.secret_code,
+                            result: Result::Loose,
+                            tries: playable.tries.clone(),
+                        })
                     }
                     ((_, _), _) => (),
                 }
@@ -159,7 +164,7 @@ mod tests_play {
         let mut game = Game::new_with_secret_code(code);
         let state = game.play(code);
         match state {
-            State::Finish(Finish(_, Result::Win, _)) => assert!(true),
+            State::Finish(finish) => assert_eq!(finish.result, Result::Win),
             _ => panic!(),
         }
     }
@@ -202,7 +207,7 @@ mod tests_play {
         }
 
         match state {
-            State::Finish(Finish(_, Result::Loose, _)) => assert!(true),
+            State::Finish(finish) => assert_eq!(finish.result, Result::Loose),
             _ => panic!(),
         }
     }
